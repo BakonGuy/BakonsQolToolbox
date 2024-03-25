@@ -27,8 +27,10 @@ class UBakonsQolToolboxLib : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintPure, Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox"))
 	static FString GetPluginVersion(const FString& PluginModuleName);
 
+	// (Wrapper function for AddonScreenDebugMessage that makes it easier to use, and is blueprint friendly)
+	// Prints a message to the screen, overwrites any existing message with the same tag
 	UFUNCTION(BlueprintCallable, Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox"))
-	static void PrintToScreenWithTag(const FString& InString, FLinearColor TextColor, float Duration, int Tag);
+	static void PrintToScreenWithTag(const FString& InString, FLinearColor TextColor = FLinearColor::White, float Duration = 2.0f, int Tag = 0);
 
 	// ======= World Functions =======
 
@@ -47,7 +49,7 @@ class UBakonsQolToolboxLib : public UBlueprintFunctionLibrary
 
 	/** Returns true if this logic is running in a Game world */
 	UFUNCTION(BlueprintCallable, BlueprintPure,  Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox", HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"))
-	static bool RunningInGameWorld(UObject* WorldContextObject, bool IncludePIE);
+	static bool RunningInGameWorld(UObject* WorldContextObject, bool IncludePIE = true);
 
 	// ======= Math Functions =======
 

@@ -36,7 +36,7 @@ EQolWorldType UBakonsQolToolboxLib::GetWorldType(UObject* WorldContextObject)
 	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if( !World ) return None;
 
-	// Map to EQolWorldType
+	// Map EWorldType to EQolWorldType
 	switch( World->WorldType )
 	{
 		case EWorldType::Editor:
