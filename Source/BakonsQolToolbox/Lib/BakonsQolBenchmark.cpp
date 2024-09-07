@@ -8,38 +8,55 @@ void UBakonsQolBenchmark::Deinitialize() {}
 
 void UBakonsQolBenchmark::StartBenchmark()
 {
-	BenchStartTime = FPlatformTime::Seconds();
+	BenchStartTimeSeconds = FPlatformTime::Seconds();
 }
 
-void UBakonsQolBenchmark::EndBenchmark(FString& ResultString)
+void UBakonsQolBenchmark::EndBenchmark()
 {
-	const double BenchEndTime = FPlatformTime::Seconds();
-	BenchResult = BenchEndTime - BenchStartTime;;
-
-	ResultString = GetPrettyBenchmarkResult();
+	BenchResultSeconds = FPlatformTime::Seconds() - BenchStartTimeSeconds;
+	DecideUnit();
 }
 
-double UBakonsQolBenchmark::GetBenchmarkResult() const
+double UBakonsQolBenchmark::EndBenchmarkWithResult(FString& OutString, EBQolTimeUnit& OutUnit)
 {
-	return BenchResult;
+	EndBenchmark();
+	OutUnit = BenchedUnit;
+	OutString = GetPrettyBenchmarkResult();
+	return GetBenchmarkResult(OutUnit);
+}
+
+double UBakonsQolBenchmark::GetBenchmarkResult(EBQolTimeUnit Unit) const
+{
+	switch( Unit )
+	{
+		case EBQolTimeUnit::Seconds: return BenchResultSeconds;
+		case EBQolTimeUnit::Milliseconds: return BenchResultSeconds * 1000.0f;
+		case EBQolTimeUnit::Microseconds: return BenchResultSeconds * 1000000.0f;
+		default: return BenchResultSeconds;
+	}
 }
 
 FString UBakonsQolBenchmark::GetPrettyBenchmarkResult() const
 {
-	// Figure the best unit for result to be displayed (us, ms, or s)
-	FString Unit = "us";
-	double Multiplier = 1000000.0f;
+	return FString::SanitizeFloat(BenchResultSeconds * UnitMultiplier) + " " + UnitString;
+}
 
-	if( BenchResult >= 0.001 ) // Milliseconds
-	{
-		Unit = "ms";
-		Multiplier = 1000.0f;
-	}
-	else if( BenchResult >= 1.0f ) // Seconds
-	{
-		Unit = "s";
-		Multiplier = 1.0f;
-	}
+void UBakonsQolBenchmark::DecideUnit()
+{
+	BenchedUnit = EBQolTimeUnit::Microseconds;
+	UnitString = "us";
+	UnitMultiplier = 1000000.0f;
 
-	return FString::SanitizeFloat(BenchResult * Multiplier) + " " + Unit;
+	if( BenchResultSeconds >= 0.001 ) // Milliseconds
+	{
+		BenchedUnit = EBQolTimeUnit::Milliseconds;
+		UnitString = "ms";
+		UnitMultiplier = 1000.0f;
+	}
+	else if( BenchResultSeconds >= 1.0f ) // Seconds
+	{
+		BenchedUnit = EBQolTimeUnit::Seconds;
+		UnitString = "s";
+		UnitMultiplier = 1.0f;
+	}
 }
