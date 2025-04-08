@@ -40,7 +40,11 @@ class UBakonsQolToolboxLib : public UBlueprintFunctionLibrary
 
 	/** Returns true if this logic is running in an Editor world */
 	UFUNCTION(BlueprintCallable, BlueprintPure,  Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox", HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"))
-	static bool RunningInEditorWorld(UObject* WorldContextObject);
+	static bool RunningInEditorWorld(UObject* WorldContextObject, bool bIncludeTools = false);
+
+	/** Returns true if this logic is running in an Editor tool */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox", HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"))
+	static bool RunningInEditorTool(UObject* WorldContextObject);
 
 	/** Returns true if this logic is running in a PlayInEditor world */
 	UFUNCTION(BlueprintCallable, BlueprintPure,  Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox", HidePin = "WorldContextObject", DefaultToSelf = "WorldContextObject"),

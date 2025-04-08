@@ -13,5 +13,10 @@ public class BakonsQolToolbox : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", });
 		PrivateDependencyModuleNames.AddRange(new string[] { "Projects", "CoreUObject", "Engine", "Slate", "SlateCore", });
 		DynamicallyLoadedModuleNames.AddRange(new string[] { });
+
+		if( Target.bBuildEditor )
+		{
+			PrivateDependencyModuleNames.Add("UnrealEd");
+		}
 	}
 }

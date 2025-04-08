@@ -54,37 +54,60 @@ EQolWorldType UBakonsQolToolboxLib::GetWorldType(UObject* WorldContextObject)
 	}
 }
 
-bool UBakonsQolToolboxLib::RunningInEditorWorld(UObject* WorldContextObject)
+bool UBakonsQolToolboxLib::RunningInEditorWorld(UObject* WorldContextObject, bool bIncludeTools)
 {
+	#if WITH_EDITOR
 	if( !WorldContextObject ) return false;
-
-	//using a context object to get the world
 	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if( !World ) return false;
 
-	return (World->WorldType == EWorldType::Editor || World->WorldType == EWorldType::EditorPreview);
+	return (World->WorldType == EWorldType::Editor) || (bIncludeTools && World->WorldType == EWorldType::EditorPreview);
+	#else
+	return false;
+	#endif
+}
+
+bool UBakonsQolToolboxLib::RunningInEditorTool(UObject* WorldContextObject)
+{
+	#if WITH_EDITOR
+	if( !WorldContextObject ) return false;
+	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
+	if( !World ) return false;
+
+	return World->WorldType == EWorldType::EditorPreview;
+	#else
+	return false;
+	#endif
 }
 
 bool UBakonsQolToolboxLib::RunningInPIEWorld(UObject* WorldContextObject)
 {
+	#if WITH_EDITOR
 	if( !WorldContextObject ) return false;
-
-	//using a context object to get the world
 	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if( !World ) return false;
 
-	return (World->WorldType == EWorldType::PIE);
+	// UE 5.4+ PIE WorldType seems broken, there doesn't seem to be a way to retrieve if we're in PIE mode or not. Even the level prefix is not there.
+	// It does return as Editor though, so we will substitute that for now.
+	#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 4
+	return World->WorldType == EWorldType::Editor;
+	#else
+		return World->IsPlayInEditor();
+	#endif
+	// UE 5.4+
+
+	#else
+	return false;
+	#endif
 }
 
 bool UBakonsQolToolboxLib::RunningInGameWorld(UObject* WorldContextObject, bool IncludePIE)
 {
 	if( !WorldContextObject ) return false;
-
-	//using a context object to get the world
 	UWorld* const World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::ReturnNull);
 	if( !World ) return false;
 
-	return (World->WorldType == EWorldType::Game || World->WorldType == EWorldType::GamePreview || (IncludePIE && World->WorldType == EWorldType::PIE));
+	return (World->WorldType == EWorldType::Game || World->WorldType == EWorldType::GamePreview || (IncludePIE && RunningInPIEWorld(WorldContextObject)));
 }
 
 void UBakonsQolToolboxLib::CalcSplineBounds(const USplineComponent* InSpline, FBoxSphereBounds& OutBounds)
