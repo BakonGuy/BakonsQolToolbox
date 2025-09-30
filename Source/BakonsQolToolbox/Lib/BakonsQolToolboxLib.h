@@ -61,6 +61,13 @@ class UBakonsQolToolboxLib : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintPure, Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox"))
 	static void CalcSplineBounds(const USplineComponent* InSpline, FBoxSphereBounds& OutBounds);
 
+	// Apply a child transform as a relative transform to a parent transform
+	UFUNCTION(BlueprintPure, Category = "Bakons Qol Toolbox", meta = (Keywords = "Bakon Qol Toolbox"))
+	static void ApplyTransform(const FTransform& Parent, const FTransform& Child, FTransform& Result)
+	{
+		Result = FTransform(Parent.TransformRotation(Child.GetRotation()), Parent.TransformPosition(Child.GetLocation()));
+	}
+
 	// ======= Bug Workarounds ========
 
 	// Workaround for a bug in chaos collision where child primitives are not updated in the physics scene

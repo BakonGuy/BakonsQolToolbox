@@ -2,6 +2,7 @@
 
 #include "BakonsQolToolboxLib.h"
 
+#include "Engine/Engine.h"
 #include "Interfaces/IPluginManager.h"
 
 UBakonsQolToolboxLib::UBakonsQolToolboxLib(const FObjectInitializer& ObjectInitializer)
