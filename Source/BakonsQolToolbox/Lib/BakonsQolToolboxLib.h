@@ -18,7 +18,7 @@ enum EQolWorldType
 };
 
 UCLASS()
-class UBakonsQolToolboxLib : public UBlueprintFunctionLibrary
+class BAKONSQOLTOOLBOX_API UBakonsQolToolboxLib : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 	// ======= Misc Functions =======
@@ -71,6 +71,7 @@ class UBakonsQolToolboxLib : public UBlueprintFunctionLibrary
 	// ======= Bug Workarounds ========
 
 	// Workaround for a bug in chaos collision where child primitives are not updated in the physics scene
+	// (Sep30/2025) This bug is still present as of Unreal 5.6.1
 	UFUNCTION(BlueprintCallable, Category = "Bakons Qol Toolbox|Transformation", meta = (Keywords = "Bakon Qol Toolbox"))
 	static void SetRelativeLocationAndRotation_ChaosWorkaround(UPrimitiveComponent* target, FVector NewLocation, FRotator NewRotation, ETeleportType Teleport = ETeleportType::None);
 };
